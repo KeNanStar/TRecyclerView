@@ -1,6 +1,7 @@
 package com.robot.recycle.view;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -20,6 +21,8 @@ public class RobotRecycleView extends FrameLayout {
     private final static int HEADER_CONTAINER_HEIGHT = 50;
     private float moveX;
     private float moveY;
+
+    private RecyclerView mRecycleView;
 
     private RelativeLayout mHeaderContainer;
     private Context mCtx;
@@ -58,18 +61,18 @@ public class RobotRecycleView extends FrameLayout {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 moveX = event.getX();
-                moveY = event.getY();
+                //moveY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                setTranslationX(getX() + (event.getX() - moveX));
-                setTranslationY(getY() + (event.getY() - moveY));
+                //mRecycleView.setTranslationX(getX() + (event.getX() - moveX));
+                mRecycleView.setTranslationY(getY() + (event.getY() - moveY));
                 break;
             case MotionEvent.ACTION_UP:
                 break;
             case MotionEvent.ACTION_CANCEL:
                 break;
         }
-        return super.onTouchEvent(event);
+        return true;
     }
 
 
@@ -87,6 +90,7 @@ public class RobotRecycleView extends FrameLayout {
 
     private void initView() {
         createHeaderView();
+        addTargetView();
     }
 
 
@@ -98,6 +102,15 @@ public class RobotRecycleView extends FrameLayout {
         params.gravity = Gravity.TOP;
         addView(mHeaderContainer, params);
     }
+
+
+    private  void addTargetView(){
+        mRecycleView = new RecyclerView(mCtx);
+        mRecycleView.setBackgroundResource(R.color.colorPrimary);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addView(mRecycleView, params);
+    }
+
 
 
     public void setHeaderView(View headerView) {
