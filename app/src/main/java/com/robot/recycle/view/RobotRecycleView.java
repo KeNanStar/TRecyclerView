@@ -18,7 +18,8 @@ import com.robot.recycle.RobotUtils;
  */
 public class RobotRecycleView extends FrameLayout {
     private final static int HEADER_CONTAINER_HEIGHT = 50;
-
+    private float moveX;
+    private float moveY;
 
     private RelativeLayout mHeaderContainer;
     private Context mCtx;
@@ -52,11 +53,27 @@ public class RobotRecycleView extends FrameLayout {
         return super.onInterceptTouchEvent(ev);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                moveX = event.getX();
+                moveY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                setTranslationX(getX() + (event.getX() - moveX));
+                setTranslationY(getY() + (event.getY() - moveY));
+                break;
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+        return super.onTouchEvent(event);
+    }
 
-    
 
-
-    /* @Override
+/* @Override
     protected void onLayout(boolean changed, int left, int top, int right,
                             int bottom) {
 
