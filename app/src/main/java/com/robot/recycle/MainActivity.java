@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
             public void run() {
                 try {
                     //模拟网络请求
-                    Thread.sleep(1000);
+                    Thread.sleep(800);
                     final ArrayList data = getData(30);
                     TaskExecutor.runInUiThread(new Runnable() {
                         @Override

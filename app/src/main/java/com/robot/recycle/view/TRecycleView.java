@@ -227,7 +227,7 @@ public class TRecycleView extends FrameLayout {
     //回弹到初始位置
     private void animToStart(){
         ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  0);
-        animator.addListener(mToHeaderListener);
+        //animator.addListener(mToHeaderListener);
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
     }
@@ -235,7 +235,7 @@ public class TRecycleView extends FrameLayout {
 
     //回弹到header位置
     private void animToHeader(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  150);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  mHeaderHeight);
         animator.addListener(mToHeaderListener);
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
