@@ -1,5 +1,6 @@
 package com.robot.recycle.view;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +30,9 @@ public class TRecycleView extends FrameLayout {
 
     // 托盘是否被拖动
     private boolean mIsDrag = false;
+
+    private static final float PULL_DRAG_RATE = .618f;
+
 
     private float mInitX = -1f;
     private float mInitY = -1f;
@@ -87,7 +91,6 @@ public class TRecycleView extends FrameLayout {
                 if(Math.abs(y-mInitY) >= mTouchSlop){
                     mIsDrag = true;
                 }
-
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -99,29 +102,32 @@ public class TRecycleView extends FrameLayout {
         return mIsDrag;
     }
 
-    @Override
-    public void requestDisallowInterceptTouchEvent(boolean b) {
-        // Nope.
-    }
+
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-       /* if(!isIntercept()){
-            return  false;
-        }*/
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //mMoveX = event.getX();
-                //mMoveY = event.getY();
+
                 break;
             case MotionEvent.ACTION_MOVE:
-                //mRecycleView.setTranslationX(getX() + (event.getX() - mMoveX));
-                //mRecycleView.setTranslationY(getY() + (event.getY() - mMoveY));
+                float y = event.getY();
+                float dist = y - mInitY;
+                if(dist > 0){
+                    mRecycleView.setTranslationY(getY() + dist * PULL_DRAG_RATE);
+                }
                 break;
             case MotionEvent.ACTION_UP:
-                break;
             case MotionEvent.ACTION_CANCEL:
+                if(mIsDrag){
+                    //开始回弹的动画
+                    ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  150);
+                    animator.setDuration(AnimConst.ANIM_HEADER_TIME);
+                    animator.start();
+                }
+                mIsDrag = false;
+
                 break;
         }
         return true;
@@ -194,6 +200,21 @@ public class TRecycleView extends FrameLayout {
 
     private boolean targetInTop(){
         return  false ;
+
+    }
+
+
+    private void animToHeader(){
+
+
+    }
+
+
+    public static class  AnimConst{
+        //回弹到header的动画时长
+        private static final  int ANIM_HEADER_TIME = 600;
+
+
 
     }
 
