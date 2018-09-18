@@ -6,9 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.robot.recycle.view.RobotRecycleView
+    <com.robot.recycle.view.TRecycleView
+        android:id="@+id/t_recycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/load_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="load_data"
+        />
 
 
 
