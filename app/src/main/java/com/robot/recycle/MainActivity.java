@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robot.recycle.common.TaskExecutor;
+import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.view.TRecycleView;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -19,10 +23,53 @@ public class MainActivity extends Activity {
         ((TextView)findViewById(R.id.load_data)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTRecycleView.setDatas(30);
+                ArrayList data = getData(30);
+                mTRecycleView.setData(data);
 
             }
         });
+
+        mTRecycleView.setPullRefresh(new IPullRefresh() {
+            @Override
+            public void pullRefresh() {
+                getDataFromNet();
+            }
+        });
+    }
+
+
+    private  void getDataFromNet(){
+        TaskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //模拟网络请求
+                    Thread.sleep(1000);
+                    final ArrayList data = getData(30);
+                    TaskExecutor.runInUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTRecycleView.setData(data);
+                            mTRecycleView.setRefresh(false);
+                        }
+                    });
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
+    //自定义数据
+    public ArrayList getData(int count) {
+        ArrayList<String> list = new ArrayList<String>();
+        for (int i = 0; i < count; i++) {
+            list.add("item " + i);
+        }
+        return  list;
     }
 
 
@@ -31,4 +78,7 @@ public class MainActivity extends Activity {
         super.onResume();
 
     }
+
+
+
 }
