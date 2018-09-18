@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.robot.recycle.adapter.NewsRecyclerAdapter;
 import com.robot.recycle.common.TaskExecutor;
+import com.robot.recycle.entity.NewsItem;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.view.TRecycleView;
 
@@ -14,27 +16,32 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
 
     private TRecycleView mTRecycleView;
+    private NewsRecyclerAdapter mNewsRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTRecycleView = (TRecycleView) findViewById(R.id.t_recycle);
-        ((TextView)findViewById(R.id.load_data)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList data = getData(30);
-                mTRecycleView.setData(data);
 
-            }
-        });
+        mNewsRecyclerAdapter = new NewsRecyclerAdapter(this);
 
+        mTRecycleView.setAdapter(mNewsRecyclerAdapter);
         mTRecycleView.setPullRefresh(new IPullRefresh() {
             @Override
             public void pullRefresh() {
                 getDataFromNet();
             }
         });
+        ((TextView)findViewById(R.id.load_data)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList data = getData(30);
+                mNewsRecyclerAdapter.setData(data);
+
+            }
+        });
+
     }
 
 
@@ -49,7 +56,7 @@ public class MainActivity extends Activity {
                     TaskExecutor.runInUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTRecycleView.setData(data);
+                            mNewsRecyclerAdapter.setData(data);
                             mTRecycleView.setRefresh(false);
                         }
                     });
@@ -65,9 +72,12 @@ public class MainActivity extends Activity {
 
     //自定义数据
     public ArrayList getData(int count) {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<NewsItem> list = new ArrayList<NewsItem>();
         for (int i = 0; i < count; i++) {
-            list.add("item " + i);
+            NewsItem item = new NewsItem();
+            item.mTitle = "新闻" + i;
+            item.mContent = "今天晴：一年的第" + i  +"天...";
+            list.add(item);
         }
         return  list;
     }

@@ -3,6 +3,7 @@ package com.robot.recycle.view;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -16,7 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.robot.recycle.R;
 import com.robot.recycle.RobotUtils;
-import com.robot.recycle.adapter.NewsRecyclerAdapter;
+import com.robot.recycle.adapter.TRecyclerAdapter;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.listener.IPushRefresh;
 
@@ -43,7 +44,7 @@ public class TRecycleView extends FrameLayout {
 
     private RelativeLayout mHeaderContainer;
 
-    private NewsRecyclerAdapter myAdapter;
+    private TRecyclerAdapter mTAdapter;
 
     private LinearLayoutManager linearLayoutManager;
 
@@ -161,10 +162,9 @@ public class TRecycleView extends FrameLayout {
         addTargetView();
         linearLayoutManager = new LinearLayoutManager(mCtx);
         mRecycleView.setLayoutManager(linearLayoutManager);
-        myAdapter = new NewsRecyclerAdapter(mCtx);
         mRecycleView.setVerticalScrollBarEnabled(true);
 
-        mRecycleView.setAdapter(myAdapter);
+
     }
 
 
@@ -193,13 +193,16 @@ public class TRecycleView extends FrameLayout {
     }
 
 
-    public void setData(ArrayList<String> data) {
-        if(data != null){
-            myAdapter.setData(data);
-            myAdapter.setData(data);
 
-        }
+    public void setAdapter(RecyclerView.Adapter adapter){
+        adapter.registerAdapterDataObserver(mDataObserver);
+        mTAdapter = new TRecyclerAdapter(mCtx, adapter);
+        mRecycleView.setAdapter(mTAdapter);
+
+
+
     }
+
 
     //托盘是否拦截事件
     private boolean isIntercept(){
@@ -291,6 +294,41 @@ public class TRecycleView extends FrameLayout {
 
     }
 
+
+
+
+    private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
+        @Override
+        public void onChanged() {
+            mTAdapter.notifyDataSetChanged();
+        }
+
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            mTAdapter.notifyItemRangeChanged(positionStart, itemCount);
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            mTAdapter.notifyItemRangeChanged(positionStart , itemCount, payload);
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            mTAdapter.notifyItemRangeInserted(positionStart , itemCount);
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            mTAdapter.notifyItemRangeRemoved(positionStart , itemCount);
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            mTAdapter.notifyItemMoved(fromPosition, toPosition );
+        }
+    };
 
 
 }
