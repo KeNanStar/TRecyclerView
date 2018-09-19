@@ -59,6 +59,7 @@ public class TRecycleView extends FrameLayout{
     private IPushRefresh mPushRefresh;
 
     private int mHeaderHeight = -1;
+    private int mTipHeight = -1;
     private boolean mRefresh = false;
     private boolean mLoadMore = false;
 
@@ -209,6 +210,7 @@ public class TRecycleView extends FrameLayout{
     private void createHeaderView() {
         mHeaderContainer = new RelativeLayout(mCtx);
         mHeaderHeight = (int)mCtx.getResources().getDimension(R.dimen.header_height);
+        mTipHeight =  (int)mCtx.getResources().getDimension(R.dimen.header_tip_height);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeaderHeight);
         params.gravity = Gravity.TOP;
         addView(mHeaderContainer, params);
@@ -265,8 +267,14 @@ public class TRecycleView extends FrameLayout{
     //回弹到初始位置
     private void animToStart(){
         ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  0);
-        //animator.addListener(mToHeaderListener);
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
+        animator.start();
+    }
+
+    //回弹到Tips提示的位置
+    private void animToTip(){
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  mTipHeight);
+        animator.setDuration(AnimDurConst.ANIM_TO_TIP_DUR);
         animator.start();
     }
 
@@ -321,6 +329,7 @@ public class TRecycleView extends FrameLayout{
         private static final  int ANIM_TO_HEADER_DUR = 600;
         //回弹到初始位置的动画时长
         private static final  int ANIM_TO_START_DUR = 600;
+        private static final  int ANIM_TO_TIP_DUR = 300;
     }
 
     private static class TRecycleViewConst{
@@ -421,6 +430,7 @@ public class TRecycleView extends FrameLayout{
 
     public void showRefreshTip(String text){
         mHeaderHolder.showRefreshTips(text);
+        animToTip();
     }
 
 }

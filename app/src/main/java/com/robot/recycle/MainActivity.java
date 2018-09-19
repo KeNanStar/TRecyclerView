@@ -147,25 +147,21 @@ public class MainActivity extends Activity {
     public ArrayList getData(int mode) {
         int count = 0;
         ArrayList<NewsItem> list = new ArrayList<NewsItem>();
-        String desc = "";
         switch (mode){
             case INIT_MODE:
                 count = INIT_COUNT - TRecycleUtils.getRandomNum(10);
-                desc = "初始数据";
                 break;
             case PULL_MODE:
                 count = PULL_COUNT - TRecycleUtils.getRandomNum(5);
-                desc = "下拉数据";
                 break;
             case PUSH_MODE:
                 count = PUSH_COUNT - TRecycleUtils.getRandomNum(10);
-                desc = "上滑数据";
                 break;
         }
 
         for (int i = 0; i < count; i++) {
             NewsItem item = new NewsItem();
-            item.mTitle = TITLES[TRecycleUtils.getRandomNum(4)] +  "-" + desc;
+            item.mTitle = TITLES[TRecycleUtils.getRandomNum(4)];
             item.mContent = CONTENTS[TRecycleUtils.getRandomNum(4)];
             list.add(item);
         }
