@@ -240,7 +240,6 @@ public class TRecycleView extends FrameLayout {
     public void setRefresh(boolean refresh){
         mRefresh = refresh;
         if(!mRefresh){
-            mRecycleView.scrollToPosition(0);
             animToStart();
         }
     }

@@ -41,7 +41,8 @@ public abstract class BaseRecyclerAdapter<T> extends RecyclerView.Adapter {
     public void insertData(ArrayList<T> data){
         if(data != null) {
             mDatas.addAll(0,data);
-            notifyItemRangeInserted(0, data.size());
+            notifyDataSetChanged();
+
         }
     }
 
