@@ -4,4 +4,9 @@
     <string name="pull_up_to_loading_more">上拉加载更多</string>
     <string name="pull_up_all_loaded">已经全部加载</string>
 
+
+    <string name="pull_loading">正在更新</string>
+    <string name="pull_to_loading_more">下拉更新</string>
+    <string name="pull_all_loaded">已经全部加载</string>
+
 </resources>

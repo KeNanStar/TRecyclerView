@@ -4,31 +4,31 @@
     android:orientation="vertical"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    android:id="@+id/footer_content"
+    android:id="@+id/header_content"
     android:visibility="visible"
     android:gravity="center"
     >
 
-    <TextView
-        android:layout_marginTop="3dp"
-        android:id="@+id/upglide_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pull_up_to_loading_more"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/grey"
-        android:textSize="12dp"
-        />
-
     <com.robot.recycle.view.LoadingView
-        android:id="@+id/upglide_load"
-        android:layout_below="@+id/upglide_tv"
+        android:id="@+id/pull_load"
         android:layout_width="40dp"
         android:layout_height="28dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="1dp"
         android:layout_marginBottom="1dp"
         android:visibility="visible"
+        />
+
+    <TextView
+        android:layout_marginTop="1dp"
+        android:id="@+id/pull_tv"
+        android:layout_below="@+id/pull_load"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pull_to_loading_more"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/grey"
+        android:textSize="12dp"
         />
 
 </RelativeLayout>

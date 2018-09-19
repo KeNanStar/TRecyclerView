@@ -19,9 +19,9 @@ import java.util.HashMap;
  * @since 2018/9/18, 下午5:11
  */
 public class TRecyclerAdapter extends RecyclerView.Adapter {
-    private static final int FOOTER_COUNT = 1;//底部View个数
-    private static final int ITEM_TYPE_FOOTER = -2;   //底部刷新view类型
-    private static final int ITEM_TYPE_CONTENT = -3;   //底部刷新view类型
+    private static final int FOOTER_COUNT = 1;
+    private static final int ITEM_TYPE_FOOTER = -2;
+    private static final int ITEM_TYPE_CONTENT = -3;
     private Context mCtx;
 
     private RecyclerView.Adapter mAdapter;

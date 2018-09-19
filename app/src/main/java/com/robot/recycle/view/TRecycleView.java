@@ -3,16 +3,22 @@ package com.robot.recycle.view;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.v4.widget.ListViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.robot.recycle.R;
 import com.robot.recycle.TRecycleUtils;
@@ -30,6 +36,7 @@ public class TRecycleView extends FrameLayout {
     // 托盘是否被拖动
     private boolean mIsDrag = false;
 
+    private HeaderHolder mHeaderHolder;
 
 
     private float mInitX = -1f;
@@ -82,21 +89,23 @@ public class TRecycleView extends FrameLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
 
-        if(!isIntercept()){
+        if(isUnIntercept()){
             return  false;
         }
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                mIsDrag = false;
                 mInitY = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 float y = ev.getY();
-                if(Math.abs(y-mInitY) >= mTouchSlop){
+                if(y-mInitY >= mTouchSlop && !mIsDrag){
                     mIsDrag = true;
                 }
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                mIsDrag = false;
                 break;
             default:
                 break;
@@ -110,10 +119,14 @@ public class TRecycleView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if(isUnIntercept()){
+            return false;
+        }
+
         float dist = 0f;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-
+                mIsDrag = false;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float y = event.getY();
@@ -134,18 +147,10 @@ public class TRecycleView extends FrameLayout {
                      }
                 }
                 mIsDrag = false;
-
                 break;
         }
         return true;
     }
-
- /*@Override
-    protected void onLayout(boolean changed, int left, int top, int right,
-                            int bottom) {
-
-
-    }*/
 
     private void init(Context ctx) {
         mCtx = ctx;
@@ -160,34 +165,64 @@ public class TRecycleView extends FrameLayout {
         linearLayoutManager = new LinearLayoutManager(mCtx);
         mRecycleView.setLayoutManager(linearLayoutManager);
         mRecycleView.setVerticalScrollBarEnabled(true);
+        initListener();
 
+    }
 
+    private void initListener(){
+        mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (targetInBottom()) {
+                      if(mPushRefresh != null){
+                          mPushRefresh.loadMore();
+                      }
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
 
     private void createHeaderView() {
         mHeaderContainer = new RelativeLayout(mCtx);
-        mHeaderContainer.setBackgroundResource(R.color.red);
         mHeaderHeight = TRecycleUtils.dip2px(mCtx, TRecycleViewConst.HEADER_CONTAINER_HEIGHT);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeaderHeight);
         params.gravity = Gravity.TOP;
         addView(mHeaderContainer, params);
+        setHeaderView();
     }
 
 
     private  void addTargetView(){
         mRecycleView = new RecyclerView(mCtx);
-        mRecycleView.setBackgroundResource(R.color.colorPrimary);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mRecycleView, params);
     }
 
 
-
-    public void setHeaderView(View headerView) {
-
+    private void setHeaderView(){
+        mHeaderHolder = new HeaderHolder(mCtx);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mHeaderHeight);
+        mHeaderContainer.addView(mHeaderHolder.getHeaderView(), params);
 
     }
+
+
+    /*public void setHeaderView(View headerView) {
+
+
+    }*/
 
 
 
@@ -201,24 +236,13 @@ public class TRecycleView extends FrameLayout {
     }
 
 
-    //托盘是否拦截事件
-    private boolean isIntercept(){
-       return  !targetInTop();
-
-    }
-
-
-    private boolean targetInTop(){
-        return  false ;
-
-    }
 
     public void setRefresh(boolean refresh){
         mRefresh = refresh;
         if(!mRefresh){
+            mRecycleView.scrollToPosition(0);
             animToStart();
         }
-
     }
 
 
@@ -286,12 +310,11 @@ public class TRecycleView extends FrameLayout {
 
     private static class TRecycleViewConst{
         private static final float PULL_DRAG_RATE = .618f;
+        //the height of the Header
         private final static int HEADER_CONTAINER_HEIGHT = 50;
 
 
     }
-
-
 
 
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
@@ -326,6 +349,43 @@ public class TRecycleView extends FrameLayout {
             mTAdapter.notifyItemMoved(fromPosition, toPosition );
         }
     };
+
+    //if recycleView can scroll, TRecycleView doesn't intercept the event
+    private boolean isUnIntercept(){
+        return  !targetInTop();
+
+    }
+
+    //the recycleView has scrolled to the top position
+    private boolean targetInTop(){
+        return  !mRecycleView.canScrollVertically(-1) ;
+
+    }
+
+    //the recycleView has scrolled to the bottom position
+    private boolean targetInBottom() {
+        if (targetInTop()) {
+            return false;
+        }
+        RecyclerView.LayoutManager layoutManager = mRecycleView.getLayoutManager();
+        int count = mRecycleView.getAdapter().getItemCount();
+        if (layoutManager instanceof LinearLayoutManager && count > 0) {
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            if (linearLayoutManager.findLastVisibleItemPosition() == count - 1) {
+                return true;
+            }
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+            int[] lastItems = new int[2];
+            staggeredGridLayoutManager
+                    .findLastCompletelyVisibleItemPositions(lastItems);
+            int lastItem = Math.max(lastItems[0], lastItems[1]);
+            if (lastItem == count - 1) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 }
