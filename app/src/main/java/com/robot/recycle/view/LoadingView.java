@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.robot.recycle.R;
-import com.robot.recycle.RobotUtils;
+import com.robot.recycle.TRecycleUtils;
 
 /**
  *
@@ -62,8 +62,8 @@ public class LoadingView extends View {
 
     private void init(Context context){
         mCtx =  context;
-        mMaxRadius = RobotUtils.dip2px(getContext(), 4);
-        mMiniRadius = RobotUtils.dip2px(getContext(), 2);
+        mMaxRadius = TRecycleUtils.dip2px(getContext(), 4);
+        mMiniRadius = TRecycleUtils.dip2px(getContext(), 2);
         mFirstRadius = mMiniRadius;
         mSecondRadius = mMaxRadius;
         mPaint = new Paint();

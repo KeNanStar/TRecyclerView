@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.robot.recycle.entity.BaseViewHolder;
+import com.robot.recycle.view.FooterHolder;
 
 import java.util.HashMap;
 
@@ -18,24 +19,24 @@ import java.util.HashMap;
  * @since 2018/9/18, 下午5:11
  */
 public class TRecyclerAdapter extends RecyclerView.Adapter {
-    private static final  int FOOTER_COUNT = 1;//底部View个数
+    private static final int FOOTER_COUNT = 1;//底部View个数
     private static final int ITEM_TYPE_FOOTER = -2;   //底部刷新view类型
     private static final int ITEM_TYPE_CONTENT = -3;   //底部刷新view类型
     private Context mCtx;
 
     private RecyclerView.Adapter mAdapter;
+    private FooterHolder mFooterHolder;
 
 
     public TRecyclerAdapter(Context context, RecyclerView.Adapter adapter) {
         init(context, adapter);
     }
 
-    private void init(Context ctx, RecyclerView.Adapter adapter){
+    private void init(Context ctx, RecyclerView.Adapter adapter) {
         mCtx = ctx;
         mAdapter = adapter;
+        mFooterHolder = new FooterHolder(mCtx);
     }
-
-
 
 
     @NonNull
@@ -57,8 +58,7 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
         RecyclerView.ViewHolder holder = null;
         switch (viewType) {
             case ITEM_TYPE_FOOTER:
-                //holder = new BaseViewHolder(mFooterHolder.getFooterView());
-                holder = new BaseViewHolder(new TextView(mCtx));
+                holder = new BaseViewHolder(mFooterHolder.getFooterView());
                 break;
             default:
                 //ITEM_TYPE_CONTENT
@@ -89,12 +89,9 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return  mAdapter.getItemCount() + FOOTER_COUNT;
+        return mAdapter.getItemCount() + FOOTER_COUNT;
     }
 
-   /* public void setFooterHolder(RecyclerFooterHolder mFooterHolder) {
-        this.mFooterHolder = mFooterHolder;
-    }*/
 
     /**
      * 判断当前item是否是FooterView

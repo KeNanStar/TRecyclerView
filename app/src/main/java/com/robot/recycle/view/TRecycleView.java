@@ -3,7 +3,6 @@ package com.robot.recycle.view;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -16,12 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.robot.recycle.R;
-import com.robot.recycle.RobotUtils;
+import com.robot.recycle.TRecycleUtils;
 import com.robot.recycle.adapter.TRecyclerAdapter;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.listener.IPushRefresh;
-
-import java.util.ArrayList;
 
 /**
  * @author xing.hu
@@ -171,7 +168,7 @@ public class TRecycleView extends FrameLayout {
     private void createHeaderView() {
         mHeaderContainer = new RelativeLayout(mCtx);
         mHeaderContainer.setBackgroundResource(R.color.red);
-        mHeaderHeight = RobotUtils.dip2px(mCtx, TRecycleViewConst.HEADER_CONTAINER_HEIGHT);
+        mHeaderHeight = TRecycleUtils.dip2px(mCtx, TRecycleViewConst.HEADER_CONTAINER_HEIGHT);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeaderHeight);
         params.gravity = Gravity.TOP;
         addView(mHeaderContainer, params);

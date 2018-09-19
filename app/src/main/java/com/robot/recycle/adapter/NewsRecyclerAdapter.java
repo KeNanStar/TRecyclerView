@@ -46,7 +46,7 @@ public class NewsRecyclerAdapter extends BaseRecyclerAdapter<NewsItem> {
         switch (viewType) {
             case NEWS_ITEM_TYPE:
                 View itemView = LayoutInflater.from(context).inflate(
-                        R.layout.news_item_layout, parent, false);
+                        R.layout.item_layout, parent, false);
                 holder = new BaseViewHolder(itemView);
                 break;
             default:

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RobotRecycle</string>
+    <string name="pull_up_loading">正在加载</string>
+    <string name="pull_up_to_loading_more">上拉加载更多</string>
+    <string name="pull_up_all_loaded">已经全部加载</string>
+
 </resources>
