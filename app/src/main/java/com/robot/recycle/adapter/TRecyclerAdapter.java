@@ -99,4 +99,8 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
     public boolean isFooter(int position) {
         return position >= (getItemCount() - FOOTER_COUNT);
     }
+
+    public FooterHolder getFooterHolder(){
+        return mFooterHolder;
+    }
 }

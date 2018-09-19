@@ -26,6 +26,8 @@ import com.robot.recycle.adapter.TRecyclerAdapter;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.listener.IPushRefresh;
 
+import java.util.TreeMap;
+
 /**
  * @author xing.hu
  * @since 2018/9/13, 下午7:43
@@ -57,6 +59,7 @@ public class TRecycleView extends FrameLayout {
 
     private int mHeaderHeight = -1;
     private boolean mRefresh = false;
+    private boolean mLoadMore = false;
 
 
     private Context mCtx;
@@ -134,6 +137,13 @@ public class TRecycleView extends FrameLayout {
                 if(dist > 0){
                     mRecycleView.setTranslationY(getY() + dist);
                 }
+                if(mIsDrag){
+                    //the distance of pull can trigger off refresh
+                    if(mPullRefresh != null){
+                        mPullRefresh.pullRefreshEnable(dist >= mHeaderHeight);
+                    }
+                }
+
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -178,6 +188,7 @@ public class TRecycleView extends FrameLayout {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (targetInBottom()) {
                       if(mPushRefresh != null){
+                          mLoadMore = true;
                           mPushRefresh.loadMore();
                       }
                     }
@@ -236,7 +247,6 @@ public class TRecycleView extends FrameLayout {
     }
 
 
-
     public void setRefresh(boolean refresh){
         mRefresh = refresh;
         if(!mRefresh){
@@ -245,6 +255,9 @@ public class TRecycleView extends FrameLayout {
     }
 
 
+   public void setLoadMore(boolean loadMore){
+        mLoadMore = loadMore;
+   }
 
 
     //回弹到初始位置
@@ -275,6 +288,7 @@ public class TRecycleView extends FrameLayout {
         @Override
         public void onAnimationEnd(Animator animation) {
             if(mPullRefresh != null){
+                mRefresh = true;
                 mPullRefresh.pullRefresh();
             }
         }
@@ -386,5 +400,12 @@ public class TRecycleView extends FrameLayout {
         return false;
     }
 
+
+    public HeaderHolder getHeaderHolder(){
+        return mHeaderHolder;
+    }
+    public FooterHolder getFooterHolder(){
+        return mTAdapter.getFooterHolder();
+    }
 
 }

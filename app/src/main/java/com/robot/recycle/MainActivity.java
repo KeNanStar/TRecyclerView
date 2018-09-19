@@ -10,6 +10,8 @@ import com.robot.recycle.common.TaskExecutor;
 import com.robot.recycle.entity.NewsItem;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.listener.IPushRefresh;
+import com.robot.recycle.view.FooterHolder;
+import com.robot.recycle.view.HeaderHolder;
 import com.robot.recycle.view.TRecycleView;
 
 import java.util.ArrayList;
@@ -77,10 +79,12 @@ public class MainActivity extends Activity {
                                 case PULL_MODE:
                                     mNewsRecyclerAdapter.insertData(data);
                                     mTRecycleView.setRefresh(false);
+                                    mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_NORMAL);
                                     break;
                                 case PUSH_MODE:
                                     mNewsRecyclerAdapter.addData(data);
-                                    // mTRecycleView.set(false);
+                                    mTRecycleView.getFooterHolder().setState(FooterHolder.STATE_NORMAL);
+                                    mTRecycleView.setLoadMore(false);
                                     break;
                                  default:
 
@@ -103,7 +107,13 @@ public class MainActivity extends Activity {
     private  IPullRefresh mPullRefresh = new IPullRefresh() {
         @Override
         public void pullRefresh() {
+            mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_LOADING);
             getDataFromNet(PULL_MODE);
+        }
+
+        @Override
+        public void pullRefreshEnable(boolean enable) {
+            mTRecycleView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_NORMAL);
         }
     };
 
@@ -111,6 +121,7 @@ public class MainActivity extends Activity {
     private IPushRefresh mPushRefresh = new IPushRefresh() {
         @Override
         public void loadMore() {
+            mTRecycleView.getFooterHolder().setState(FooterHolder.STATE_LOADING);
             getDataFromNet(PUSH_MODE);
         }
     };

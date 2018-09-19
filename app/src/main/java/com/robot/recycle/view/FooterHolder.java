@@ -17,7 +17,6 @@ public class FooterHolder {
     public final static int STATE_TIPS = STATE_LOADING + 1;
 
 
-    private View mContentView;
     private TextView mLoadText;
     private LoadingView mLoadingView;
     private String mLoadingTip = "";
@@ -59,19 +58,17 @@ public class FooterHolder {
      * hide footer when disable pull load more
      */
     private void normal() {
-        mContentView.setVisibility(View.VISIBLE);
+        showFooterView(false);
         mLoadText.setText(mNormalTip);
         mLoadingView.stop();
-        mLoadingView.setVisibility(View.GONE);
     }
 
     /**
      * show footer
      */
     private void loading() {
-        mContentView.setVisibility(View.VISIBLE);
+        showFooterView(true);
         mLoadText.setText(mLoadingTip);
-        mLoadingView.setVisibility(View.VISIBLE);
         mLoadingView.start();
 
     }
@@ -79,27 +76,37 @@ public class FooterHolder {
 
     private void showTips(String tip){
         if(!TextUtils.isEmpty(tip)) {
-            mContentView.setVisibility(View.VISIBLE);
+            showFooterView(true);
             mLoadText.setText(tip);
             mLoadingView.stop();
-            mLoadingView.setVisibility(View.GONE);
         }
 
     }
 
 
+    public void showFooterView(boolean isShow){
+        if(mFooterView != null ){
+            if(isShow){
+                if(mFooterView.getVisibility() != View.VISIBLE){
+                    mFooterView.setVisibility(View.VISIBLE);
+                }
+            }else{
+                if(mFooterView.getVisibility() == View.VISIBLE){
+                    mFooterView.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    }
+
     private void initView() {
         mFooterView = (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_footer, null);
         mFooterView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecycleUtils.dip2px(mCtx, FOOTER_HEIGHT)));
-        mContentView = mFooterView.findViewById(R.id.footer_content);
         mLoadText = (TextView) mFooterView.findViewById(R.id.upglide_tv);
         mLoadingView = (LoadingView) mFooterView.findViewById(R.id.upglide_load);
         mLoadingTip = mCtx.getResources().getString(R.string.pull_up_loading);
         mNormalTip =  mCtx.getResources().getString(R.string.pull_up_to_loading_more);
 
     }
-
-
 
 
 

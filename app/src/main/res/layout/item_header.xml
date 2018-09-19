@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:id="@+id/header_content"
-    android:visibility="visible"
+    android:visibility="invisible"
     android:gravity="center"
     >
 
@@ -25,7 +25,7 @@
         android:layout_below="@+id/pull_load"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/pull_to_loading_more"
+        android:text="@string/pull_tip"
         android:layout_centerHorizontal="true"
         android:textColor="@color/grey"
         android:textSize="12dp"
