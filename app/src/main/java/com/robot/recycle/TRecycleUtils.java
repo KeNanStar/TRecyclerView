@@ -5,6 +5,8 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import java.util.Random;
+
 /**
  * @author xing.hu
  * @since 2018/9/13, 下午7:58
@@ -42,5 +44,8 @@ public class TRecycleUtils {
         return  -1;
     }
 
-
+    public static int getRandomNum(int num){
+        Random random = new Random();
+        return random.nextInt(num);
+    }
 }

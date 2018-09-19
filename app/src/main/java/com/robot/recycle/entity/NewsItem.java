@@ -6,7 +6,6 @@ package com.robot.recycle.entity;
  */
 public class NewsItem {
     public String mTitle;
-
     public String mContent;
 
     public NewsItem(){

@@ -25,6 +25,7 @@ public class HeaderHolder {
     public final static int STATE_RELEASE = STATE_TIPS + 1;
     public final static int STATE_HIDE_LOAD = STATE_RELEASE + 1;
     public final static int STATE_SHOW_LOAD = STATE_HIDE_LOAD + 1;
+    public final static int STATE_PULL = STATE_SHOW_LOAD + 1;
 
 
     private TextView mLoadText;
@@ -65,6 +66,9 @@ public class HeaderHolder {
                 break;
             case STATE_NORMAL:
                 normal();
+                break;
+            case STATE_PULL:
+                pullTip();
                 break;
             case STATE_LOADING:
                 loading();
@@ -119,9 +123,7 @@ public class HeaderHolder {
     }
 
 
-    /**
-     * hide footer when disable pull load more
-     */
+
     private void normal() {
         showHeaderView(false);
         mLoadText.setText(mNormalTip);
@@ -129,9 +131,15 @@ public class HeaderHolder {
 
     }
 
-    /**
-     * show footer
-     */
+
+
+    private void pullTip() {
+        showHeaderView(true);
+        mLoadText.setText(mNormalTip);
+        mLoadingView.stop();
+
+    }
+
     private void loading() {
         setState(STATE_SHOW_LOAD);
         showHeaderView(true);

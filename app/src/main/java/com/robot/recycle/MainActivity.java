@@ -22,13 +22,20 @@ public class MainActivity extends Activity {
     private NewsRecyclerAdapter mNewsRecyclerAdapter;
 
 
-    private static  final int  INIT_COUNT = 30;
+    private static  final int  INIT_COUNT = 25;
     private static  final int  PULL_COUNT = 10;
     private static  final int  PUSH_COUNT = 20;
 
     private static  final int  INIT_MODE = 0;
     private static  final int  PULL_MODE = 1;
     private static  final int  PUSH_MODE = 2;
+
+
+    private static final String[] TITLES = {"互联网金融", "云计算", "机器学习", "人工智能"};
+    private static final String[] CONTENTS = {"互联网金融不是互联网和金融业的简单结合，而是在实现安全、移动等网络技术水平上，被用户熟悉接受后（尤其是对电子商务的接受），自然而然为适应新的需求而产生的新模式及新业务",
+            "云计算（cloudcomputing）是基于互联网的相关服务的增加、使用和交付模式，通常涉及通过互联网来提供动态易扩展且经常是虚拟化的资源。"
+            , "机器学习(Machine Learning, ML)是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。"
+            , "人工智能（Artificial Intelligence），英文缩写为AI。它是研究、开发用于模拟、延伸和扩展人的智能的理论、方法、技术及应用系统的一门新的技术科学。"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +121,7 @@ public class MainActivity extends Activity {
 
         @Override
         public void pullRefreshEnable(boolean enable) {
-            mTRecycleView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_NORMAL);
+            mTRecycleView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_PULL);
         }
 
         @Override
@@ -143,23 +150,23 @@ public class MainActivity extends Activity {
         String desc = "";
         switch (mode){
             case INIT_MODE:
-                count = INIT_COUNT;
+                count = INIT_COUNT - TRecycleUtils.getRandomNum(10);
                 desc = "初始数据";
                 break;
             case PULL_MODE:
-                count = PULL_COUNT;
+                count = PULL_COUNT - TRecycleUtils.getRandomNum(5);
                 desc = "下拉数据";
                 break;
             case PUSH_MODE:
-                count = PUSH_COUNT;
+                count = PUSH_COUNT - TRecycleUtils.getRandomNum(10);
                 desc = "上滑数据";
                 break;
         }
 
         for (int i = 0; i < count; i++) {
             NewsItem item = new NewsItem();
-            item.mTitle = "新闻" + i + "-" + desc;
-            item.mContent = "今天晴：一年的第" + i  +"天...";
+            item.mTitle = TITLES[TRecycleUtils.getRandomNum(4)] +  "-" + desc;
+            item.mContent = CONTENTS[TRecycleUtils.getRandomNum(4)];
             list.add(item);
         }
         return  list;
