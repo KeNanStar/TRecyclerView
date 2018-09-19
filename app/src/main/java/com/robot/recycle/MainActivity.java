@@ -77,9 +77,10 @@ public class MainActivity extends Activity {
                                     mNewsRecyclerAdapter.setData(data);
                                     break;
                                 case PULL_MODE:
+                                    String tip = "为你更新了" + data.size()+ "条新闻";
+                                    mTRecycleView.showRefreshTip(tip);
                                     mNewsRecyclerAdapter.insertData(data);
-                                    mTRecycleView.setRefresh(false);
-                                    mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_NORMAL);
+                                    mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_HIDE_LOAD);
                                     break;
                                 case PUSH_MODE:
                                     mNewsRecyclerAdapter.addData(data);
@@ -114,6 +115,12 @@ public class MainActivity extends Activity {
         @Override
         public void pullRefreshEnable(boolean enable) {
             mTRecycleView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_NORMAL);
+        }
+
+        @Override
+        public void pullRefreshEnd() {
+            mTRecycleView.setRefresh(false);
+
         }
     };
 

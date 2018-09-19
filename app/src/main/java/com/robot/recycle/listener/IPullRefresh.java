@@ -7,5 +7,6 @@ package com.robot.recycle.listener;
 public interface IPullRefresh {
     void pullRefresh();
     void pullRefreshEnable(boolean enable);
+    void pullRefreshEnd();
 
 }

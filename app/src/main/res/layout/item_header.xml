@@ -8,6 +8,17 @@
     android:visibility="invisible"
     android:gravity="center"
     >
+    <TextView
+        android:id="@+id/num_tip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_tip_height"
+        android:background="@color/white"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:maxLines="1"
+        android:textColor="@color/red"
+        android:visibility="invisible"
+        />
 
     <com.robot.recycle.view.LoadingView
         android:id="@+id/pull_load"
@@ -30,5 +41,6 @@
         android:textColor="@color/grey"
         android:textSize="12dp"
         />
+
 
 </RelativeLayout>

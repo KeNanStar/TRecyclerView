@@ -23,6 +23,7 @@ import android.widget.ScrollView;
 import com.robot.recycle.R;
 import com.robot.recycle.TRecycleUtils;
 import com.robot.recycle.adapter.TRecyclerAdapter;
+import com.robot.recycle.listener.IAnimListener;
 import com.robot.recycle.listener.IPullRefresh;
 import com.robot.recycle.listener.IPushRefresh;
 
@@ -32,7 +33,7 @@ import java.util.TreeMap;
  * @author xing.hu
  * @since 2018/9/13, 下午7:43
  */
-public class TRecycleView extends FrameLayout {
+public class TRecycleView extends FrameLayout{
     private int mTouchSlop;
 
     // 托盘是否被拖动
@@ -207,7 +208,7 @@ public class TRecycleView extends FrameLayout {
 
     private void createHeaderView() {
         mHeaderContainer = new RelativeLayout(mCtx);
-        mHeaderHeight = TRecycleUtils.dip2px(mCtx, TRecycleViewConst.HEADER_CONTAINER_HEIGHT);
+        mHeaderHeight = (int)mCtx.getResources().getDimension(R.dimen.header_height);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeaderHeight);
         params.gravity = Gravity.TOP;
         addView(mHeaderContainer, params);
@@ -226,6 +227,7 @@ public class TRecycleView extends FrameLayout {
         mHeaderHolder = new HeaderHolder(mCtx);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mHeaderHeight);
         mHeaderContainer.addView(mHeaderHolder.getHeaderView(), params);
+        mHeaderHolder.setAnimListener(mAnimListener);
 
     }
 
@@ -324,7 +326,7 @@ public class TRecycleView extends FrameLayout {
     private static class TRecycleViewConst{
         private static final float PULL_DRAG_RATE = .618f;
         //the height of the Header
-        private final static int HEADER_CONTAINER_HEIGHT = 50;
+        //private final static int HEADER_CONTAINER_HEIGHT = 50;
 
 
     }
@@ -406,6 +408,19 @@ public class TRecycleView extends FrameLayout {
     }
     public FooterHolder getFooterHolder(){
         return mTAdapter.getFooterHolder();
+    }
+
+    private IAnimListener mAnimListener = new IAnimListener() {
+        @Override
+        public void hideAnimEnd() {
+            if(mPullRefresh != null){
+                mPullRefresh.pullRefreshEnd();
+            }
+        }
+    };
+
+    public void showRefreshTip(String text){
+        mHeaderHolder.showRefreshTips(text);
     }
 
 }
