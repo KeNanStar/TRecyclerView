@@ -1,10 +1,10 @@
-package com.robot.recycle.adapter;
+package com.robot.recycler.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.robot.recycle.entity.BaseViewHolder;
+import com.robot.recycler.entity.BaseViewHolder;
 
 import java.util.ArrayList;
 

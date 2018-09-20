@@ -1,4 +1,4 @@
-package com.robot.recycle.adapter;
+package com.robot.recycler.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.robot.recycle.R;
-import com.robot.recycle.TRecycleUtils;
-import com.robot.recycle.entity.BaseViewHolder;
-import com.robot.recycle.entity.NewsItem;
-
-import java.util.Random;
+import com.robot.recycler.R;
+import com.robot.recycler.TRecyclerUtils;
+import com.robot.recycler.entity.BaseViewHolder;
+import com.robot.recycler.entity.NewsItem;
 
 /**
  * @author xing.hu
@@ -24,8 +22,6 @@ public class NewsRecyclerAdapter extends BaseRecyclerAdapter<NewsItem> {
 
     private static final int NEWS_ITEM_TYPE_PIC = 1;
     private static final int NEWS_ITEM_TYPE_NORMAL = 2;
-
-    private static final int[] IMG_IDS = {R.mipmap.pic_1, R.mipmap.pic_2, R.mipmap.pic_3, R.mipmap.pic_4};
 
 
     public NewsRecyclerAdapter(Context context) {
@@ -75,7 +71,7 @@ public class NewsRecyclerAdapter extends BaseRecyclerAdapter<NewsItem> {
                 if (item != null) {
                     ((TextView) holder.getView(R.id.title)).setText(item.mTitle);
                     ((TextView) holder.getView(R.id.content)).setText(item.mContent);
-                    ((ImageView) holder.getView(R.id.img)).setImageResource(IMG_IDS[TRecycleUtils.getRandomNum(4)]);
+                    ((ImageView) holder.getView(R.id.img)).setImageResource(item.mResId);
                 }
                 break;
             case NEWS_ITEM_TYPE_NORMAL:

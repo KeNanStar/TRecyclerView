@@ -1,4 +1,4 @@
-package com.robot.recycle;
+package com.robot.recycler;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

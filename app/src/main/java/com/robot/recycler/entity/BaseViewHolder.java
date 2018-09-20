@@ -1,4 +1,4 @@
-package com.robot.recycle.entity;
+package com.robot.recycler.entity;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;

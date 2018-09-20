@@ -1,10 +1,9 @@
-package com.robot.recycle.view;
+package com.robot.recycler.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,9 +12,9 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.robot.recycle.R;
-import com.robot.recycle.TRecycleUtils;
-import com.robot.recycle.listener.IAnimListener;
+import com.robot.recycler.R;
+import com.robot.recycler.TRecyclerUtils;
+import com.robot.recycler.listener.IAnimListener;
 
 
 public class HeaderHolder {
@@ -169,7 +168,7 @@ public class HeaderHolder {
 
     private void initView() {
         mHeaderView = (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_header, null);
-        mHeaderView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecycleUtils.dip2px(mCtx, FOOTER_HEIGHT)));
+        mHeaderView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecyclerUtils.dip2px(mCtx, FOOTER_HEIGHT)));
         mLoadText = (TextView) mHeaderView.findViewById(R.id.pull_tv);
         mLoadingView = (LoadingView) mHeaderView.findViewById(R.id.pull_load);
         mNewsNumTip = (TextView)mHeaderView.findViewById(R.id.num_tip);
@@ -193,7 +192,7 @@ public class HeaderHolder {
         }
 
         float height = mCtx.getResources().getDimension(R.dimen.header_height);
-        float width = TRecycleUtils.getScreenWidth(mCtx);
+        float width = TRecyclerUtils.getScreenWidth(mCtx);
 
         mNewsNumTip.setPivotX(width / 2);
         mNewsNumTip.setPivotY(height / 2);

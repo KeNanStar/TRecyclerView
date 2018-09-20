@@ -1,4 +1,4 @@
-package com.robot.recycle.adapter;
+package com.robot.recycler.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.robot.recycle.entity.BaseViewHolder;
-import com.robot.recycle.view.FooterHolder;
+import com.robot.recycler.entity.BaseViewHolder;
+import com.robot.recycler.view.FooterHolder;
 
 import java.util.HashMap;
 

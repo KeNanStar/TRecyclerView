@@ -1,4 +1,4 @@
-package com.robot.recycle;
+package com.robot.recycler;
 
 import android.app.Application;
 import android.content.Context;
@@ -11,7 +11,7 @@ import java.util.Random;
  * @author xing.hu
  * @since 2018/9/13, 下午7:58
  */
-public class TRecycleUtils {
+public class TRecyclerUtils {
 
     public static int dip2px(Context context, int dip) {
         int densityDpi = context.getResources().getDisplayMetrics().densityDpi;

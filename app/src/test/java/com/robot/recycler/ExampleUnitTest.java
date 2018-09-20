@@ -1,4 +1,4 @@
-package com.robot.recycle;
+package com.robot.recycler;
 
 import org.junit.Test;
 

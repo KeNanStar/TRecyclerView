@@ -1,39 +1,30 @@
-package com.robot.recycle.view;
+package com.robot.recycler.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.v4.widget.ListViewCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
-import com.robot.recycle.R;
-import com.robot.recycle.TRecycleUtils;
-import com.robot.recycle.adapter.TRecyclerAdapter;
-import com.robot.recycle.listener.IAnimListener;
-import com.robot.recycle.listener.IPullRefresh;
-import com.robot.recycle.listener.IPushRefresh;
-
-import java.util.TreeMap;
+import com.robot.recycler.R;
+import com.robot.recycler.adapter.TRecyclerAdapter;
+import com.robot.recycler.listener.IAnimListener;
+import com.robot.recycler.listener.IPullRefresh;
+import com.robot.recycler.listener.IPushRefresh;
 
 /**
  * @author xing.hu
  * @since 2018/9/13, 下午7:43
  */
-public class TRecycleView extends FrameLayout{
+public class TRecyclerView extends FrameLayout{
     private int mTouchSlop;
 
     // 托盘是否被拖动
@@ -45,7 +36,7 @@ public class TRecycleView extends FrameLayout{
     private float mInitX = -1f;
     private float mInitY = -1f;
 
-    private RecyclerView mRecycleView;
+    private RecyclerView mRecyclerView;
 
     //private boolean mIntercept = false;
 
@@ -67,24 +58,24 @@ public class TRecycleView extends FrameLayout{
     private Context mCtx;
 
 
-    public TRecycleView(Context context) {
+    public TRecyclerView(Context context) {
         super(context);
         init(context);
     }
 
-    public TRecycleView(Context context, AttributeSet attrs) {
+    public TRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
 
     }
 
-    public TRecycleView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public TRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
 
     }
 
-    public TRecycleView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public TRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
 
@@ -137,7 +128,7 @@ public class TRecycleView extends FrameLayout{
                 float y = event.getY();
                 dist = (y - mInitY)* TRecycleViewConst.PULL_DRAG_RATE;
                 if(dist > 0){
-                    mRecycleView.setTranslationY(getY() + dist);
+                    mRecyclerView.setTranslationY(getY() + dist);
                 }
                 if(mIsDrag){
                     //the distance of pull can trigger off refresh
@@ -175,14 +166,14 @@ public class TRecycleView extends FrameLayout{
         createHeaderView();
         addTargetView();
         linearLayoutManager = new LinearLayoutManager(mCtx);
-        mRecycleView.setLayoutManager(linearLayoutManager);
-        mRecycleView.setVerticalScrollBarEnabled(true);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setVerticalScrollBarEnabled(true);
         initListener();
 
     }
 
     private void initListener(){
-        mRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -219,9 +210,9 @@ public class TRecycleView extends FrameLayout{
 
 
     private  void addTargetView(){
-        mRecycleView = new RecyclerView(mCtx);
+        mRecyclerView = new RecyclerView(mCtx);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        addView(mRecycleView, params);
+        addView(mRecyclerView, params);
     }
 
 
@@ -244,7 +235,7 @@ public class TRecycleView extends FrameLayout{
     public void setAdapter(RecyclerView.Adapter adapter){
         adapter.registerAdapterDataObserver(mDataObserver);
         mTAdapter = new TRecyclerAdapter(mCtx, adapter);
-        mRecycleView.setAdapter(mTAdapter);
+        mRecyclerView.setAdapter(mTAdapter);
 
 
 
@@ -266,14 +257,14 @@ public class TRecycleView extends FrameLayout{
 
     //回弹到初始位置
     private void animToStart(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  0);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  0);
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
     }
 
     //回弹到Tips提示的位置
     private void animToTip(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  mTipHeight);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  mTipHeight);
         animator.setDuration(AnimDurConst.ANIM_TO_TIP_DUR);
         animator.start();
     }
@@ -281,7 +272,7 @@ public class TRecycleView extends FrameLayout{
 
     //回弹到header位置
     private void animToHeader(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecycleView,"translationY",  mHeaderHeight);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  mHeaderHeight);
         animator.addListener(mToHeaderListener);
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
@@ -382,7 +373,7 @@ public class TRecycleView extends FrameLayout{
 
     //the recycleView has scrolled to the top position
     private boolean targetInTop(){
-        return  !mRecycleView.canScrollVertically(-1) ;
+        return  !mRecyclerView.canScrollVertically(-1) ;
 
     }
 
@@ -391,8 +382,8 @@ public class TRecycleView extends FrameLayout{
         if (targetInTop()) {
             return false;
         }
-        RecyclerView.LayoutManager layoutManager = mRecycleView.getLayoutManager();
-        int count = mRecycleView.getAdapter().getItemCount();
+        RecyclerView.LayoutManager layoutManager = mRecyclerView.getLayoutManager();
+        int count = mRecyclerView.getAdapter().getItemCount();
         if (layoutManager instanceof LinearLayoutManager && count > 0) {
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
             if (linearLayoutManager.findLastVisibleItemPosition() == count - 1) {

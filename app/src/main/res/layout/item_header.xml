@@ -20,7 +20,7 @@
         android:visibility="invisible"
         />
 
-    <com.robot.recycle.view.LoadingView
+    <com.robot.recycler.view.LoadingView
         android:id="@+id/pull_load"
         android:layout_width="40dp"
         android:layout_height="28dp"

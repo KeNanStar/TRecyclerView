@@ -1,4 +1,4 @@
-package com.robot.recycle.view;
+package com.robot.recycler.view;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.robot.recycle.R;
-import com.robot.recycle.TRecycleUtils;
+import com.robot.recycler.R;
+import com.robot.recycler.TRecyclerUtils;
 
 /**
  *
@@ -47,8 +47,8 @@ public class LoadingView extends View {
     }
 
     private void init(){
-        mMaxRadius = TRecycleUtils.dip2px(getContext(), 4);
-        mMiniRadius = TRecycleUtils.dip2px(getContext(), 2);
+        mMaxRadius = TRecyclerUtils.dip2px(getContext(), 4);
+        mMiniRadius = TRecyclerUtils.dip2px(getContext(), 2);
         mAnimateRadius = mMiniRadius;
         mPaint = new Paint();
         int mColor = getContext().getResources().getColor(R.color.red, null);

@@ -1,24 +1,24 @@
-package com.robot.recycle;
+package com.robot.recycler;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.robot.recycle.adapter.NewsRecyclerAdapter;
-import com.robot.recycle.common.TaskExecutor;
-import com.robot.recycle.entity.NewsItem;
-import com.robot.recycle.listener.IPullRefresh;
-import com.robot.recycle.listener.IPushRefresh;
-import com.robot.recycle.view.FooterHolder;
-import com.robot.recycle.view.HeaderHolder;
-import com.robot.recycle.view.TRecycleView;
+import com.robot.recycler.adapter.NewsRecyclerAdapter;
+import com.robot.recycler.common.TaskExecutor;
+import com.robot.recycler.entity.NewsItem;
+import com.robot.recycler.listener.IPullRefresh;
+import com.robot.recycler.listener.IPushRefresh;
+import com.robot.recycler.view.FooterHolder;
+import com.robot.recycler.view.HeaderHolder;
+import com.robot.recycler.view.TRecyclerView;
 
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    private TRecycleView mTRecycleView;
+    private TRecyclerView mTRecyclerView;
     private NewsRecyclerAdapter mNewsRecyclerAdapter;
 
 
@@ -31,17 +31,14 @@ public class MainActivity extends Activity {
     private static  final int  PUSH_MODE = 2;
 
 
-    private static final String[] TITLES = {"互联网金融", "云计算", "机器学习", "人工智能"};
-    private static final String[] CONTENTS = {"互联网金融不是互联网和金融业的简单结合，而是在实现安全、移动等网络技术水平上，被用户熟悉接受后（尤其是对电子商务的接受），自然而然为适应新的需求而产生的新模式及新业务",
-            "云计算（cloudcomputing）是基于互联网的相关服务的增加、使用和交付模式，通常涉及通过互联网来提供动态易扩展且经常是虚拟化的资源。"
-            , "机器学习(Machine Learning, ML)是一门多领域交叉学科，涉及概率论、统计学、逼近论、凸分析、算法复杂度理论等多门学科。"
-            , "人工智能（Artificial Intelligence），英文缩写为AI。它是研究、开发用于模拟、延伸和扩展人的智能的理论、方法、技术及应用系统的一门新的技术科学。"};
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTRecycleView = (TRecycleView) findViewById(R.id.t_recycle);
+        mTRecyclerView = (TRecyclerView) findViewById(R.id.t_recycle);
 
         initTRecycleView();
         ((TextView)findViewById(R.id.load_data)).setOnClickListener(new View.OnClickListener() {
@@ -62,9 +59,9 @@ public class MainActivity extends Activity {
 
     private void initTRecycleView(){
         mNewsRecyclerAdapter = new NewsRecyclerAdapter(this);
-        mTRecycleView.setAdapter(mNewsRecyclerAdapter);
-        mTRecycleView.setPullRefresh(mPullRefresh);
-        mTRecycleView.setPushRefresh(mPushRefresh);
+        mTRecyclerView.setAdapter(mNewsRecyclerAdapter);
+        mTRecyclerView.setPullRefresh(mPullRefresh);
+        mTRecyclerView.setPushRefresh(mPushRefresh);
     }
 
 
@@ -85,14 +82,14 @@ public class MainActivity extends Activity {
                                     break;
                                 case PULL_MODE:
                                     String tip = "为你更新了" + data.size()+ "条新闻";
-                                    mTRecycleView.showRefreshTip(tip);
+                                    mTRecyclerView.showRefreshTip(tip);
                                     mNewsRecyclerAdapter.insertData(data);
-                                    mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_HIDE_LOAD);
+                                    mTRecyclerView.getHeaderHolder().setState(HeaderHolder.STATE_HIDE_LOAD);
                                     break;
                                 case PUSH_MODE:
                                     mNewsRecyclerAdapter.addData(data);
-                                    mTRecycleView.getFooterHolder().setState(FooterHolder.STATE_NORMAL);
-                                    mTRecycleView.setLoadMore(false);
+                                    mTRecyclerView.getFooterHolder().setState(FooterHolder.STATE_NORMAL);
+                                    mTRecyclerView.setLoadMore(false);
                                     break;
                                  default:
 
@@ -115,18 +112,18 @@ public class MainActivity extends Activity {
     private  IPullRefresh mPullRefresh = new IPullRefresh() {
         @Override
         public void pullRefresh() {
-            mTRecycleView.getHeaderHolder().setState(HeaderHolder.STATE_LOADING);
+            mTRecyclerView.getHeaderHolder().setState(HeaderHolder.STATE_LOADING);
             getDataFromNet(PULL_MODE);
         }
 
         @Override
         public void pullRefreshEnable(boolean enable) {
-            mTRecycleView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_PULL);
+            mTRecyclerView.getHeaderHolder().setState(enable ?HeaderHolder.STATE_RELEASE: HeaderHolder.STATE_PULL);
         }
 
         @Override
         public void pullRefreshEnd() {
-            mTRecycleView.setRefresh(false);
+            mTRecyclerView.setRefresh(false);
 
         }
     };
@@ -135,7 +132,7 @@ public class MainActivity extends Activity {
     private IPushRefresh mPushRefresh = new IPushRefresh() {
         @Override
         public void loadMore() {
-            mTRecycleView.getFooterHolder().setState(FooterHolder.STATE_LOADING);
+            mTRecyclerView.getFooterHolder().setState(FooterHolder.STATE_LOADING);
             getDataFromNet(PUSH_MODE);
         }
     };
@@ -149,20 +146,18 @@ public class MainActivity extends Activity {
         ArrayList<NewsItem> list = new ArrayList<NewsItem>();
         switch (mode){
             case INIT_MODE:
-                count = INIT_COUNT - TRecycleUtils.getRandomNum(10);
+                count = INIT_COUNT - TRecyclerUtils.getRandomNum(10);
                 break;
             case PULL_MODE:
-                count = PULL_COUNT - TRecycleUtils.getRandomNum(5);
+                count = PULL_COUNT - TRecyclerUtils.getRandomNum(5);
                 break;
             case PUSH_MODE:
-                count = PUSH_COUNT - TRecycleUtils.getRandomNum(10);
+                count = PUSH_COUNT - TRecyclerUtils.getRandomNum(10);
                 break;
         }
 
         for (int i = 0; i < count; i++) {
             NewsItem item = new NewsItem();
-            item.mTitle = TITLES[TRecycleUtils.getRandomNum(4)];
-            item.mContent = CONTENTS[TRecycleUtils.getRandomNum(4)];
             list.add(item);
         }
         return  list;

@@ -20,7 +20,7 @@
         android:textSize="12dp"
         />
 
-    <com.robot.recycle.view.LoadingView
+    <com.robot.recycler.view.LoadingView
         android:id="@+id/upglide_load"
         android:layout_below="@+id/upglide_tv"
         android:layout_width="40dp"

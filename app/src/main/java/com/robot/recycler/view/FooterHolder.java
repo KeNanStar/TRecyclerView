@@ -1,4 +1,4 @@
-package com.robot.recycle.view;
+package com.robot.recycler.view;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.robot.recycle.R;
-import com.robot.recycle.TRecycleUtils;
+import com.robot.recycler.R;
+import com.robot.recycler.TRecyclerUtils;
 
 
 public class FooterHolder {
@@ -100,7 +100,7 @@ public class FooterHolder {
 
     private void initView() {
         mFooterView = (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_footer, null);
-        mFooterView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecycleUtils.dip2px(mCtx, FOOTER_HEIGHT)));
+        mFooterView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecyclerUtils.dip2px(mCtx, FOOTER_HEIGHT)));
         mLoadText = (TextView) mFooterView.findViewById(R.id.upglide_tv);
         mLoadingView = (LoadingView) mFooterView.findViewById(R.id.upglide_load);
         mLoadingTip = mCtx.getResources().getString(R.string.pull_up_loading);

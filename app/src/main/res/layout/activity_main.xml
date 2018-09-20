@@ -7,7 +7,7 @@
     android:background="@android:color/transparent"
     tools:context=".MainActivity">
 
-    <com.robot.recycle.view.TRecycleView
+    <com.robot.recycler.view.TRecyclerView
         android:id="@+id/t_recycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
