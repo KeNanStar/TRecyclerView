@@ -21,7 +21,6 @@ import java.util.HashMap;
 public class TRecyclerAdapter extends RecyclerView.Adapter {
     private static final int FOOTER_COUNT = 1;
     private static final int ITEM_TYPE_FOOTER = -2;
-    private static final int ITEM_TYPE_CONTENT = -3;
     private Context mCtx;
 
     private RecyclerView.Adapter mAdapter;
@@ -61,7 +60,6 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
                 holder = new BaseViewHolder(mFooterHolder.getFooterView());
                 break;
             default:
-                //ITEM_TYPE_CONTENT
                 holder = mAdapter.onCreateViewHolder(parent, viewType);
                 break;
         }
@@ -70,7 +68,7 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
 
     private void initData(RecyclerView.ViewHolder holder, final int position) {
         final int type = getItemViewType(position);
-        if (type != ITEM_TYPE_CONTENT) {
+        if (type != ITEM_TYPE_FOOTER) {
             mAdapter.onBindViewHolder(holder, position);
         }
 
@@ -93,9 +91,6 @@ public class TRecyclerAdapter extends RecyclerView.Adapter {
     }
 
 
-    /**
-     * 判断当前item是否是FooterView
-     */
     public boolean isFooter(int position) {
         return position >= (getItemCount() - FOOTER_COUNT);
     }

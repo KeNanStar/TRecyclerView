@@ -426,15 +426,6 @@ public class TRecyclerView extends FrameLayout{
             if (linearLayoutManager.findLastVisibleItemPosition() == count - 1) {
                 return true;
             }
-        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
-            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-            int[] lastItems = new int[2];
-            staggeredGridLayoutManager
-                    .findLastCompletelyVisibleItemPositions(lastItems);
-            int lastItem = Math.max(lastItems[0], lastItems[1]);
-            if (lastItem == count - 1) {
-                return true;
-            }
         }
         return false;
     }
