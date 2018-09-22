@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -119,7 +120,7 @@ public class TRecyclerView extends FrameLayout{
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
          //if the recycleView can scroll, then the TRecyclerView doesn't intercept the event.
-        if(isUnIntercept()){
+        if(isUnIntercept() || mRefresh){
             return  false;
         }
         switch (action) {
@@ -245,7 +246,9 @@ public class TRecyclerView extends FrameLayout{
 
 
     private  void addTargetView(){
-        mRecyclerView = new RecyclerView(mCtx);
+       // mRecyclerView = new RecyclerView(mCtx);
+        mRecyclerView = (RecyclerView) LayoutInflater.from(mCtx).inflate(
+                R.layout.recycler_view, this, false);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mRecyclerView, params);
     }
