@@ -162,12 +162,25 @@ public class TRecyclerView extends FrameLayout {
                 mIsDrag = false;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float y = event.getY();
-                dist = (y - mInitY) * TRecycleViewConst.PULL_DRAG_RATE;
-                if (dist > 0) {
-                    setTargetOffsetTopAndBottom(dist);
-                }
                 if (mIsDrag) {
+                    float y = event.getY();
+                    dist = (y - mInitY) * TRecycleViewConst.PULL_DRAG_RATE;
+
+                    if(mCurrentTargetOffsetTop >= mOriginalOffsetTop) {
+                        //如果下次移动的距离加上当前的距离顶部的距离小于header的初始位置，则需要重置header、RecycleView、footer,
+                        // 同时检查SuperSwipe是否移动顶部，RecycleView滑到顶部，则造一个down事件，交给RecycleView处理，让其可以继续上滑。
+                        if(dist  <  mOriginalOffsetTop ){
+                            quickToStart();
+                            buildDownEvent(event);
+                        }else {
+                            setTargetOffsetTopAndBottom(dist);
+
+                        }
+                    }else{
+                        buildDownEvent(event);
+                    }
+
+
                     //the distance of pull can trigger off refresh
                     if (mPullRefresh != null) {
                         mPullRefresh.pullRefreshEnable(dist >= mHeaderHeight);
@@ -314,7 +327,6 @@ public class TRecyclerView extends FrameLayout {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mRefresh = false;
                 mCurrentTargetOffsetTop = 0;
 
             }
@@ -496,6 +508,18 @@ public class TRecyclerView extends FrameLayout {
         return false;
     }
 
+    /**
+     * 如果SuperSwipe滑到顶部且RecycleView滑到顶部，则造一个down事件，交给RecycleView处理，让其可以继续上滑
+     */
+    private void buildDownEvent(MotionEvent ev){
+        if(targetInTop()) {
+            MotionEvent downEvent = MotionEvent.obtain(ev);
+            downEvent.setAction(MotionEvent.ACTION_DOWN);
+            super.dispatchTouchEvent(downEvent);
+
+        }
+
+    }
 
     public HeaderHolder getHeaderHolder() {
         return mHeaderHolder;
