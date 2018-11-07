@@ -34,7 +34,9 @@ public class HeaderHolder {
     private String mReleaseTip = "";
     private static final int FOOTER_HEIGHT = 55;
 
-    private RelativeLayout mHeaderView;
+    private RelativeLayout mProgressView;
+
+    private RelativeLayout mTipView;
 
     private Context mCtx;
 
@@ -86,23 +88,37 @@ public class HeaderHolder {
         }
     }
 
-    public void showHeaderView(boolean isShow){
-        if(mHeaderView != null ){
+    public void showProgressView(boolean isShow){
+        if(mProgressView != null ){
             if(isShow){
-                if(mHeaderView.getVisibility() != View.VISIBLE){
-                    mHeaderView.setVisibility(View.VISIBLE);
+                if(mProgressView.getVisibility() != View.VISIBLE){
+                    mProgressView.setVisibility(View.VISIBLE);
                 }
             }else{
-                if(mHeaderView.getVisibility() == View.VISIBLE){
-                    mHeaderView.setVisibility(View.INVISIBLE);
+                if(mProgressView.getVisibility() == View.VISIBLE){
+                    mProgressView.setVisibility(View.INVISIBLE);
                 }
             }
         }
     }
 
 
+    public void showTipView(boolean isShow){
+        if(mTipView != null ){
+            if(isShow){
+                if(mTipView.getVisibility() != View.VISIBLE){
+                    mTipView.setVisibility(View.VISIBLE);
+                }
+            }else{
+                if(mTipView.getVisibility() == View.VISIBLE){
+                    mTipView.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    }
+
     private  void showLoad(boolean isShow){
-        if(mHeaderView != null ){
+        if(mProgressView != null ){
             if(isShow){
                 if(mLoadingView.getVisibility() != View.VISIBLE){
                     mLoadingView.setVisibility(View.VISIBLE);
@@ -124,7 +140,7 @@ public class HeaderHolder {
 
 
     private void normal() {
-        showHeaderView(false);
+        showProgressView(false);
         mLoadText.setText(mNormalTip);
         mLoadingView.stop();
 
@@ -133,7 +149,7 @@ public class HeaderHolder {
 
 
     private void pullTip() {
-        showHeaderView(true);
+        showProgressView(true);
         mLoadText.setText(mNormalTip);
         mLoadingView.stop();
 
@@ -141,7 +157,7 @@ public class HeaderHolder {
 
     private void loading() {
         setState(STATE_SHOW_LOAD);
-        showHeaderView(true);
+        showProgressView(true);
         mLoadText.setText(mLoadingTip);
         mLoadingView.start();
 
@@ -150,7 +166,7 @@ public class HeaderHolder {
 
     private void release() {
         setState(STATE_SHOW_LOAD);
-        showHeaderView(true);
+        showProgressView(true);
         mLoadText.setText(mReleaseTip);
         mLoadingView.stop();
     }
@@ -158,7 +174,7 @@ public class HeaderHolder {
     private void showTips(String tip){
         if(!TextUtils.isEmpty(tip)) {
             setState(STATE_SHOW_LOAD);
-            showHeaderView(true);
+            showProgressView(true);
             mLoadText.setText(tip);
             mLoadingView.stop();
         }
@@ -167,11 +183,14 @@ public class HeaderHolder {
 
 
     private void initView() {
-        mHeaderView = (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_header, null);
-        mHeaderView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecyclerUtils.dip2px(mCtx, FOOTER_HEIGHT)));
-        mLoadText = (TextView) mHeaderView.findViewById(R.id.pull_tv);
-        mLoadingView = (LoadingView) mHeaderView.findViewById(R.id.pull_load);
-        mNewsNumTip = (TextView)mHeaderView.findViewById(R.id.num_tip);
+        mProgressView = (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_progress, null);
+        mProgressView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, TRecyclerUtils.dip2px(mCtx, FOOTER_HEIGHT)));
+        mLoadText = (TextView) mProgressView.findViewById(R.id.pull_tv);
+        mLoadingView = (LoadingView) mProgressView.findViewById(R.id.pull_load);
+
+        mTipView =  (RelativeLayout) LayoutInflater.from(mCtx).inflate(R.layout.item_tip, null);
+
+        mNewsNumTip = (TextView) mTipView.findViewById(R.id.num_tip);
         mLoadingTip = mCtx.getResources().getString(R.string.pull_loading);
         mNormalTip =  mCtx.getResources().getString(R.string.pull_tip);
         mReleaseTip =  mCtx.getResources().getString(R.string.pull_release_tip);
@@ -180,6 +199,7 @@ public class HeaderHolder {
 
 
     public void showRefreshTips(String text) {
+        showTipView(true);
         mNewsNumTip.setVisibility(View.VISIBLE);
         mNewsNumTip.setText(text);
         showTipAnim();
@@ -294,7 +314,11 @@ public class HeaderHolder {
 
 
 
-    public RelativeLayout getHeaderView() {
-        return mHeaderView;
+    public RelativeLayout getProgressView() {
+        return mProgressView;
+    }
+
+    public RelativeLayout getTipView() {
+        return mTipView;
     }
 }

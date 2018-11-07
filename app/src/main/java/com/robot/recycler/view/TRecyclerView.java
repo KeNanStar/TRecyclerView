@@ -2,11 +2,12 @@ package com.robot.recycler.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -25,32 +26,31 @@ import com.robot.recycler.listener.IPushRefresh;
  * @author xing.hu
  * @since 2018/9/13, 下午7:43
  * TRecyclerView
- *
+ * <p>
  * pull down to refresh data, slide up to load data and the position of loading animation fixed
- *
+ * <p>
  * the composition of TRecyclerView:
- *
+ * <p>
  * 1)  TRecyclerView is a viewGroup-frameLayout, include  the header view and  recyclerView;
- *
+ * <p>
  * 2)  The function of header view is showing loading animation and tips animation;
- *
+ * <p>
  * 3)  The recycleView has a RecyclerView.Adapter: TRecyclerAdapter, the types of View in TRecyclerAdapter is
- *
- *   the footer view and normal view. RecyclerView loads normal view by the RecyclerView.Adapter which needs
- *
- *   to be implemented.
- *
- *   
- *
- *  the implementation of TRecyclerView:
- *
- *  1) When the TRecycleView is pulled over a certain distance, after releasing the hand, start to refresh the data.
- *
- *  2) When the RecycleView slides up to the last element(Footer View) is visible, start to load data.
- *
- *
+ * <p>
+ * the footer view and normal view. RecyclerView loads normal view by the RecyclerView.Adapter which needs
+ * <p>
+ * to be implemented.
+ * <p>
+ * <p>
+ * <p>
+ * the implementation of TRecyclerView:
+ * <p>
+ * 1) When the TRecycleView is pulled over a certain distance, after releasing the hand, start to refresh the data.
+ * <p>
+ * 2) When the RecycleView slides up to the last element(Footer View) is visible, start to load data.
  */
-public class TRecyclerView extends FrameLayout{
+public class TRecyclerView extends FrameLayout {
+    private static final String TAG = TRecyclerView.class.getSimpleName();
     private int mTouchSlop;
 
     // whether the TRecyclerView be dragged
@@ -67,7 +67,7 @@ public class TRecyclerView extends FrameLayout{
     private RecyclerView mRecyclerView;
 
     //the header view
-    private RelativeLayout mHeaderContainer;
+    //private RelativeLayout mHeaderContainer;
 
     //TRecyclerAdapter include the footer view and normal view
     private TRecyclerAdapter mTAdapter;
@@ -88,6 +88,9 @@ public class TRecyclerView extends FrameLayout{
     private boolean mRefresh = false;
 
     private boolean mLoadMore = false;
+
+    private float mCurrentTargetOffsetTop;
+    protected int mOriginalOffsetTop;
 
 
     private Context mCtx;
@@ -119,9 +122,9 @@ public class TRecyclerView extends FrameLayout{
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         int action = ev.getAction();
-         //if the recycleView can scroll, then the TRecyclerView doesn't intercept the event.
-        if(isUnIntercept() || mRefresh){
-            return  false;
+        //if the recycleView can scroll, then the TRecyclerView doesn't intercept the event.
+        if (isUnIntercept() || mRefresh) {
+            return false;
         }
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -131,7 +134,7 @@ public class TRecyclerView extends FrameLayout{
             case MotionEvent.ACTION_MOVE:
                 float y = ev.getY();
                 //if the distance of moving is over the touchSlop, then The TRecyclerView is dragged.
-                if(y-mInitY >= mTouchSlop && !mIsDrag){
+                if (y - mInitY >= mTouchSlop && !mIsDrag) {
                     mIsDrag = true;
                 }
                 break;
@@ -147,11 +150,9 @@ public class TRecyclerView extends FrameLayout{
     }
 
 
-
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(isUnIntercept()){
+        if (isUnIntercept()) {
             return false;
         }
 
@@ -162,13 +163,13 @@ public class TRecyclerView extends FrameLayout{
                 break;
             case MotionEvent.ACTION_MOVE:
                 float y = event.getY();
-                dist = (y - mInitY)* TRecycleViewConst.PULL_DRAG_RATE;
-                if(dist > 0){
-                    mRecyclerView.setTranslationY(dist);
+                dist = (y - mInitY) * TRecycleViewConst.PULL_DRAG_RATE;
+                if (dist > 0) {
+                    setTargetOffsetTopAndBottom(dist);
                 }
-                if(mIsDrag){
+                if (mIsDrag) {
                     //the distance of pull can trigger off refresh
-                    if(mPullRefresh != null){
+                    if (mPullRefresh != null) {
                         mPullRefresh.pullRefreshEnable(dist >= mHeaderHeight);
                     }
                 }
@@ -177,14 +178,14 @@ public class TRecyclerView extends FrameLayout{
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 dist = (event.getY() - mInitY) * TRecycleViewConst.PULL_DRAG_RATE;
-                if(mIsDrag){
+                if (mIsDrag) {
                     //if the distance of moving is over the header height ,
                     // then show the anim which moves to header position, else show the anim which moves to start position.
-                     if(dist >= mHeaderHeight){
-                         animToHeader();
-                     }else{
-                         animToStart();
-                     }
+                    if (dist >= mHeaderHeight) {
+                        animToHeader();
+                    } else {
+                        animToStart();
+                    }
                 }
                 mIsDrag = false;
                 break;
@@ -200,8 +201,11 @@ public class TRecyclerView extends FrameLayout{
     }
 
     private void initView() {
-        createHeaderView();
+        mHeaderHolder = new HeaderHolder(mCtx);
+        mHeaderHolder.setAnimListener(mAnimListener);
+        addProgressView();
         addTargetView();
+        addTipView();
         linearLayoutManager = new LinearLayoutManager(mCtx);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setVerticalScrollBarEnabled(true);
@@ -209,7 +213,7 @@ public class TRecyclerView extends FrameLayout{
 
     }
 
-    private void initListener(){
+    private void initListener() {
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -217,36 +221,38 @@ public class TRecyclerView extends FrameLayout{
                 //when the recycleView has scrolled to the bottom position and the state of RecycleView is IDLE, start to load data.
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (targetInBottom()) {
-                      if(mPushRefresh != null){
-                          mLoadMore = true;
-                          mPushRefresh.loadMore();
-                      }
+                        if (mPushRefresh != null) {
+                            mLoadMore = true;
+                            mPushRefresh.loadMore();
+                        }
                     }
                 }
 
             }
+        });
 
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    quickToStart();
+                }
             }
         });
     }
 
-    //create header view
-    private void createHeaderView() {
-        mHeaderContainer = new RelativeLayout(mCtx);
-        mHeaderHeight = (int)mCtx.getResources().getDimension(R.dimen.header_height);
-        mTipHeight =  (int)mCtx.getResources().getDimension(R.dimen.header_tip_height);
+    //add progress view
+    private void addProgressView() {
+        mHeaderHeight = (int) mCtx.getResources().getDimension(R.dimen.header_height);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mHeaderHeight);
         params.gravity = Gravity.TOP;
-        addView(mHeaderContainer, params);
-        setHeaderView();
+        addView(mHeaderHolder.getProgressView(), params);
     }
 
 
-    private  void addTargetView(){
-       // mRecyclerView = new RecyclerView(mCtx);
+    private void addTargetView() {
+        // mRecyclerView = new RecyclerView(mCtx);
         mRecyclerView = (RecyclerView) LayoutInflater.from(mCtx).inflate(
                 R.layout.recycler_view, this, false);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -254,11 +260,12 @@ public class TRecyclerView extends FrameLayout{
     }
 
 
-    private void setHeaderView(){
-        mHeaderHolder = new HeaderHolder(mCtx);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mHeaderHeight);
-        mHeaderContainer.addView(mHeaderHolder.getHeaderView(), params);
-        mHeaderHolder.setAnimListener(mAnimListener);
+    // add tip view
+    private void addTipView() {
+        mTipHeight = (int) mCtx.getResources().getDimension(R.dimen.header_tip_height);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mTipHeight);
+        params.gravity = Gravity.TOP;
+        addView(mHeaderHolder.getTipView(), params);
 
     }
 
@@ -269,8 +276,7 @@ public class TRecyclerView extends FrameLayout{
     }*/
 
 
-
-    public void setAdapter(RecyclerView.Adapter adapter){
+    public void setAdapter(RecyclerView.Adapter adapter) {
         adapter.registerAdapterDataObserver(mDataObserver);
         mTAdapter = new TRecyclerAdapter(mCtx, adapter);
         mRecyclerView.setAdapter(mTAdapter);
@@ -278,38 +284,95 @@ public class TRecyclerView extends FrameLayout{
     }
 
 
-    public void setRefresh(boolean refresh){
+    public void setRefresh(boolean refresh) {
         mRefresh = refresh;
-        if(!mRefresh){
+        if (!mRefresh) {
             animToStart();
         }
     }
 
 
-   public void setLoadMore(boolean loadMore){
+    public void setLoadMore(boolean loadMore) {
         mLoadMore = loadMore;
-   }
+    }
 
+    //move the target by setTranslationY
+    private void setTargetOffsetTopAndBottom(float offset) {
+        mRecyclerView.setTranslationY(offset);
+        mCurrentTargetOffsetTop = offset;
+    }
+
+
+    //moves to start position without anim
+    private void quickToStart() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView, "translationY", 0);
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mRefresh = false;
+                mCurrentTargetOffsetTop = 0;
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animator.setDuration(0);
+        animator.start();
+    }
 
     //the anim which moves to start position
-    private void animToStart(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  0);
+    private void animToStart() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView, "translationY", 0);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCurrentTargetOffsetTop = (float) animation.getAnimatedValue();
+                Log.d(TAG, "animToStart():" + "mCurrentTargetOffsetTop:" + mCurrentTargetOffsetTop);
+            }
+        });
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
     }
 
     //the anim which moves to tip position
-    private void animToTip(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  mTipHeight);
+    private void animToTip() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView, "translationY", mTipHeight);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCurrentTargetOffsetTop = (float) animation.getAnimatedValue();
+                Log.d(TAG, "animToTip():" + "mCurrentTargetOffsetTop:" + mCurrentTargetOffsetTop);
+            }
+        });
         animator.setDuration(AnimDurConst.ANIM_TO_TIP_DUR);
         animator.start();
     }
 
 
     //the anim which moves to header position,w hen the anim is end, start to refresh data
-    private void animToHeader(){
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView,"translationY",  mHeaderHeight);
+    private void animToHeader() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView, "translationY", mHeaderHeight);
         animator.addListener(mToHeaderListener);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mCurrentTargetOffsetTop = (float) animation.getAnimatedValue();
+                Log.d(TAG, "animToHeader():" + "mCurrentTargetOffsetTop:" + mCurrentTargetOffsetTop);
+            }
+        });
         animator.setDuration(AnimDurConst.ANIM_TO_HEADER_DUR);
         animator.start();
 
@@ -325,7 +388,7 @@ public class TRecyclerView extends FrameLayout{
         @Override
         public void onAnimationEnd(Animator animation) {
             //when the anim of move to header is end, start to refresh data
-            if(mPullRefresh != null){
+            if (mPullRefresh != null) {
                 mRefresh = true;
                 mPullRefresh.pullRefresh();
             }
@@ -354,14 +417,14 @@ public class TRecyclerView extends FrameLayout{
 
     private static class AnimDurConst {
         //the duration of anim to header  position
-        private static final  int ANIM_TO_HEADER_DUR = 600;
+        private static final int ANIM_TO_HEADER_DUR = 600;
         //the duration of anim to start position
-        private static final  int ANIM_TO_START_DUR = 600;
+        private static final int ANIM_TO_START_DUR = 600;
         //the duration of anim to tip position
-        private static final  int ANIM_TO_TIP_DUR = 300;
+        private static final int ANIM_TO_TIP_DUR = 300;
     }
 
-    private static class TRecycleViewConst{
+    private static class TRecycleViewConst {
         private static final float PULL_DRAG_RATE = .618f;
         //the height of the Header
         //private final static int HEADER_CONTAINER_HEIGHT = 50;
@@ -386,34 +449,34 @@ public class TRecyclerView extends FrameLayout{
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-            mTAdapter.notifyItemRangeChanged(positionStart , itemCount, payload);
+            mTAdapter.notifyItemRangeChanged(positionStart, itemCount, payload);
         }
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
-            mTAdapter.notifyItemRangeInserted(positionStart , itemCount);
+            mTAdapter.notifyItemRangeInserted(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
-            mTAdapter.notifyItemRangeRemoved(positionStart , itemCount);
+            mTAdapter.notifyItemRangeRemoved(positionStart, itemCount);
         }
 
         @Override
         public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-            mTAdapter.notifyItemMoved(fromPosition, toPosition );
+            mTAdapter.notifyItemMoved(fromPosition, toPosition);
         }
     };
 
     //if recycleView can scroll, TRecycleView doesn't intercept the event
-    private boolean isUnIntercept(){
-        return  !targetInTop();
+    private boolean isUnIntercept() {
+        return !targetInTop();
 
     }
 
     //the recycleView has scrolled to the top position
-    private boolean targetInTop(){
-        return  !mRecyclerView.canScrollVertically(-1) ;
+    private boolean targetInTop() {
+        return !mRecyclerView.canScrollVertically(-1);
 
     }
 
@@ -434,25 +497,29 @@ public class TRecyclerView extends FrameLayout{
     }
 
 
-    public HeaderHolder getHeaderHolder(){
+    public HeaderHolder getHeaderHolder() {
         return mHeaderHolder;
     }
-    public FooterHolder getFooterHolder(){
+
+    public FooterHolder getFooterHolder() {
         return mTAdapter.getFooterHolder();
     }
 
     private IAnimListener mAnimListener = new IAnimListener() {
         @Override
         public void hideAnimEnd() {
-            if(mPullRefresh != null){
+            if (mPullRefresh != null) {
                 mPullRefresh.pullRefreshEnd();
             }
         }
     };
 
-    public void showRefreshTip(String text){
+    public void showRefreshTip(String text) {
         mHeaderHolder.showRefreshTips(text);
-        animToTip();
+        if (mCurrentTargetOffsetTop > mTipHeight) {
+            animToTip();
+        }
+
     }
 
 }
