@@ -164,7 +164,7 @@ public class TRecyclerView extends FrameLayout{
                 float y = event.getY();
                 dist = (y - mInitY)* TRecycleViewConst.PULL_DRAG_RATE;
                 if(dist > 0){
-                    mRecyclerView.setTranslationY(getY() + dist);
+                    mRecyclerView.setTranslationY(dist);
                 }
                 if(mIsDrag){
                     //the distance of pull can trigger off refresh
