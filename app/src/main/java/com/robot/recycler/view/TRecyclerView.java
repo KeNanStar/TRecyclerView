@@ -26,27 +26,27 @@ import com.robot.recycler.listener.IPushRefresh;
  * @author xing.hu
  * @since 2018/9/13, 下午7:43
  * TRecyclerView
- * <p>
+ *
  * pull down to refresh data, slide up to load data and the position of loading animation fixed
- * <p>
+ *
  * the composition of TRecyclerView:
- * <p>
+ *
  * 1)  TRecyclerView is a viewGroup-frameLayout, include  the header view and  recyclerView;
- * <p>
+ *
  * 2)  The function of header view is showing loading animation and tips animation;
- * <p>
+ *
  * 3)  The recycleView has a RecyclerView.Adapter: TRecyclerAdapter, the types of View in TRecyclerAdapter is
- * <p>
+ *
  * the footer view and normal view. RecyclerView loads normal view by the RecyclerView.Adapter which needs
- * <p>
+ *
  * to be implemented.
- * <p>
- * <p>
- * <p>
+ *
+ *
+ *
  * the implementation of TRecyclerView:
- * <p>
+ *
  * 1) When the TRecycleView is pulled over a certain distance, after releasing the hand, start to refresh the data.
- * <p>
+ *
  * 2) When the RecycleView slides up to the last element(Footer View) is visible, start to load data.
  */
 public class TRecyclerView extends FrameLayout {
@@ -281,12 +281,7 @@ public class TRecyclerView extends FrameLayout {
         addView(mHeaderHolder.getTipView(), params);
 
     }
-
-
-    /*public void setHeaderView(View headerView) {
-
-
-    }*/
+    
 
 
     public void setAdapter(RecyclerView.Adapter adapter) {
@@ -445,8 +440,9 @@ public class TRecyclerView extends FrameLayout {
     }
 
 
-    //Set up an observer， when the normal adapter starts to notifyDataChanged，
-    // the real adapter-TRecyclerAdapter starts to notifyDataChanged
+    /**
+     *Set up an observer， when the normal adapter starts to notifyDataChanged，the real adapter-TRecyclerAdapter starts to notifyDataChanged
+     */
     private RecyclerView.AdapterDataObserver mDataObserver = new RecyclerView.AdapterDataObserver() {
         @Override
         public void onChanged() {
@@ -480,19 +476,25 @@ public class TRecyclerView extends FrameLayout {
         }
     };
 
-    //if recycleView can scroll, TRecycleView doesn't intercept the event
+    /**
+     * if recycleView can scroll, TRecycleView doesn't intercept the event
+     */
     private boolean isUnIntercept() {
         return !targetInTop();
 
     }
 
-    //the recycleView has scrolled to the top position
+    /**
+     * the recycleView has scrolled to the top position
+     */
     private boolean targetInTop() {
         return !mRecyclerView.canScrollVertically(-1);
 
     }
 
-    //the recycleView has scrolled to the bottom position
+    /**
+     * the recycleView has scrolled to the bottom position
+     */
     private boolean targetInBottom() {
         if (targetInTop()) {
             return false;
@@ -509,7 +511,9 @@ public class TRecyclerView extends FrameLayout {
     }
 
     /**
-     * 如果SuperSwipe滑到顶部且RecycleView滑到顶部，则造一个down事件，交给RecycleView处理，让其可以继续上滑
+     * if TRecyclerView scroll to the top, then build a action down event and dispatch the event to recyclerView,
+     * the recyclerView can scroll
+     *
      */
     private void buildDownEvent(MotionEvent ev){
         if(targetInTop()) {
@@ -518,7 +522,6 @@ public class TRecyclerView extends FrameLayout {
             super.dispatchTouchEvent(downEvent);
 
         }
-
     }
 
     public HeaderHolder getHeaderHolder() {
