@@ -167,7 +167,7 @@ public class TRecyclerView extends FrameLayout {
                     dist = (y - mInitY) * TRecycleViewConst.PULL_DRAG_RATE;
 
                     if(mCurrentTargetOffsetTop >= mOriginalOffsetTop) {
-                        //如果下次移动的距离加上当前的距离顶部的距离小于header的初始位置，则需要重置header、RecycleView、footer,
+                        //如果下次移动的距离加上当前的距离顶部的距离小于header的初始位置，则RecyclerView回顶,
                         // 同时检查SuperSwipe是否移动顶部，RecycleView滑到顶部，则造一个down事件，交给RecycleView处理，让其可以继续上滑。
                         if(dist  <  mOriginalOffsetTop ){
                             quickToStart();
