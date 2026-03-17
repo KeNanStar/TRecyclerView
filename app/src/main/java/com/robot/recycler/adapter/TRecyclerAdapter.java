@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 /**
  * @author xing.hu
- * @since 2018/9/18, 下午5:11
+ * @since 2026/3/10, 下午5:11
  */
 public class TRecyclerAdapter extends RecyclerView.Adapter {
     private static final int FOOTER_COUNT = 1;

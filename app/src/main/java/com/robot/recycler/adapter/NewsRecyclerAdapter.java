@@ -14,7 +14,7 @@ import com.robot.recycler.entity.NewsItem;
 
 /**
  * @author xing.hu
- * @since 2018/9/18, 下午8:42
+ * @since 2026/3/10, 下午8:42
  */
 public class NewsRecyclerAdapter extends BaseRecyclerAdapter<NewsItem> {
 

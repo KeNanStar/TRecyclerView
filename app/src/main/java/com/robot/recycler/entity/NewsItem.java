@@ -4,7 +4,7 @@ import com.robot.recycler.TRecyclerUtils;
 
 /**
  * @author xing.hu
- * @since 2018/9/18, 下午8:42
+ * @since 2026/3/10, 下午8:42
  */
 public class NewsItem {
     public static final String[] TITLES = {"欧冠C罗高难凌空斩神球", "任正非最新讲话透露了华为的“野心”和“心机”", "歌手吴亦凡？其实他是个演员", "人工智能:下一次技术革命！！！"};
